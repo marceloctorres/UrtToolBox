@@ -63,10 +63,15 @@ class ReemplazarFuente(object):
         arcpy.AddMessage(nuevaFuente)
         arcpy.AddMessage(viejaFuente)
 
+        mxd = arcpy.mapping.MapDocument("CURRENT")
+        mxd.findAndReplaceWorkspacePaths(viejaFuente, nuevaFuente)
+        mxd.save()
+
+        return 
+
         wksDescribe = arcpy.Describe(viejaFuente)
         tipoFuente = wksDescribe.workspaceType
 
-        mxd = arcpy.mapping.MapDocument("CURRENT")
         layers = arcpy.mapping.ListLayers(mxd)
 
         for layer in layers :
