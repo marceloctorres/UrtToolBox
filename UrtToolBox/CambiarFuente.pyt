@@ -10,14 +10,13 @@ class Toolbox(object):
 
         # List of tool classes associated with this toolbox
         self.tools = [ReemplazarFuente]
-
-
+        
 class ReemplazarFuente(object):
     def __init__(self):
         """Define the tool (tool name is the name of the class)."""
         self.label = "Reemplazar Fuente Capas"
         self.description = "Reemplazar Fuente Capas"
-        self.canRunInBackground = True
+        self.canRunInBackground = False
         self.Params = {'viejaFuente': 0, 'nuevaFuente': 1}
 
     def getParameterInfo(self):
@@ -68,39 +67,3 @@ class ReemplazarFuente(object):
         mxd.save()
 
         return 
-
-        wksDescribe = arcpy.Describe(viejaFuente)
-        tipoFuente = wksDescribe.workspaceType
-
-        layers = arcpy.mapping.ListLayers(mxd)
-
-        for layer in layers :
-          try : 
-            arcpy.AddMessage("Nombre Dataset: {}".format(layer.datasetName)) 
-            arcpy.AddMessage("Fuente Datos: {}".format(layer.dataSource))
-            if(tipoFuente == 'RemoteDatabase') :
-              server = wksDescribe.connectionProperties.server
-              instance = wksDescribe.connectionProperties.instance
-              database = wksDescribe.connectionProperties.database
-              version = wksDescribe.connectionProperties.version
-
-              arcpy.AddMessage("Servidor {}".format(server))
-              arcpy.AddMessage("Instancia {}".format(instance))
-              arcpy.AddMessage("Base de Datos {}".format(database))
-              arcpy.AddMessage("Version {}".format(version))
-
-              change = server in layer.dataSource or viejaFuente in layer.dataSource
-            else :
-              change = str(viejaFuente) in layer.dataSource
-
-
-            if(change) :
-              arcpy.AddMessage("Cambiar")
-              layer.replaceDataSource(nuevaFuente, "NONE", layer.datasetName)
-              arcpy.AddMessage(layer.dataSource)
-          except Exception as ex :
-            arcpy.AddMessage(ex.message)
-            arcpy.AddMessage(ex.args)
-        
-        mxd.save()
-        return
